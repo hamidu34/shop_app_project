@@ -9,6 +9,7 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
+    final scaffold = ScaffoldMessenger.of(context);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
@@ -21,8 +22,14 @@ class ProductItem extends StatelessWidget {
           leading: Consumer<Product>(
             builder: (context, value, child) => IconButton(
               padding: const EdgeInsets.all(0),
-              onPressed: () {
-                product.toggleFavStatus();
+              onPressed: () async {
+                try {
+                  await product.toggleFavStatus();
+                } catch (error) {
+                  scaffold.showSnackBar(const SnackBar(
+                    content: Text('Error occurred! Try checking your Internet'),
+                  ));
+                }
               },
               icon: Icon(
                 product.isFavorite
