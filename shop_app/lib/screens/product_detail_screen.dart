@@ -10,41 +10,52 @@ class ProductDetailScreen extends StatelessWidget {
     final loadedProducts =
         Provider.of<Products>(context, listen: false).findbyid(productId);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(loadedProducts.title),
-      ),
-      body: SingleChildScrollView(
-          child: Column(
-        children: [
-          SizedBox(
-            height: 300,
-            width: double.infinity,
-            child: Image.network(loadedProducts.imageUrl),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Text(
-            '\$${loadedProducts.price}',
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.grey,
-              fontSize: 20,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 300,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text(loadedProducts.title),
+              background: Hero(
+                tag: loadedProducts.id,
+                child: Image.network(
+                  loadedProducts.imageUrl,
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
           ),
-          const SizedBox(
-            height: 20,
-          ),
-          Text(
-            loadedProducts.description,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.grey,
-              fontSize: 20,
+          SliverList(
+              delegate: SliverChildListDelegate([
+            const SizedBox(
+              height: 20,
             ),
-          ),
+            Text(
+              '\$${loadedProducts.price}',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 20,
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Text(
+              loadedProducts.description,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 20,
+              ),
+            ),
+            const SizedBox(
+              height: 800,
+            )
+          ]))
         ],
-      )),
+      ),
     );
   }
 }

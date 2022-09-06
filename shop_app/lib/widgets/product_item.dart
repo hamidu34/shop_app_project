@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/provider/auth.dart';
 
 import '/provider/cart.dart';
 import '/provider/product.dart';
@@ -10,6 +11,7 @@ class ProductItem extends StatelessWidget {
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
     final scaffold = ScaffoldMessenger.of(context);
+    final authData = Provider.of<Auth>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
@@ -24,7 +26,8 @@ class ProductItem extends StatelessWidget {
               padding: const EdgeInsets.all(0),
               onPressed: () async {
                 try {
-                  await product.toggleFavStatus();
+                  await product.toggleFavStatus(
+                      authData.token, authData.userId);
                 } catch (error) {
                   scaffold.showSnackBar(const SnackBar(
                     content: Text('Error occurred! Try checking your Internet'),
@@ -72,9 +75,12 @@ class ProductItem extends StatelessWidget {
               arguments: product.id,
             );
           },
-          child: Image.network(
-            product.imageUrl,
-            fit: BoxFit.cover,
+          child: Hero(
+            tag: product.id,
+            child: Image.network(
+              product.imageUrl,
+              fit: BoxFit.cover,
+            ),
           ),
         ),
       ),
